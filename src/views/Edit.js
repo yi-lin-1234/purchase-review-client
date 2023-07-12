@@ -3,8 +3,9 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 
 import { getPurchaseById, updatePurchaseById } from "../apiService";
+import SuccessAlert from "../components/SuccessAlert";
+import ErrorAlert from "../components/ErrorAlert";
 
-import { CheckCircleIcon, XCircleIcon } from "@heroicons/react/20/solid";
 import { PhotoIcon, ArrowUpOnSquareIcon } from "@heroicons/react/24/solid";
 
 function Edit() {
@@ -23,8 +24,7 @@ function Edit() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [success, setSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [statusCode, setStatusCode] = useState(null);
+  const [error, setError] = useState(null);
 
   const evaluation_options = ["good", "bad"];
 
@@ -43,6 +43,7 @@ function Edit() {
         setCurrentImage(data.ImageUrl);
       } catch (error) {
         console.error(error);
+        setError(error);
       } finally {
         setIsLoading(false);
       }
@@ -70,7 +71,7 @@ function Edit() {
       return response.data.secure_url;
     } catch (error) {
       console.error(error);
-      setErrorMessage("Error uploading image."); // Set error state
+      alert("Error uploading image."); // Set error state
     }
   }
 
@@ -86,13 +87,13 @@ function Edit() {
 
     // Validate text input fields (should not be just spaces)
     if (!name.trim() || !category.trim() || !link.trim() || !notes.trim()) {
-      setErrorMessage("Text fields cannot be empty or consist of only spaces.");
+      alert("Text fields cannot be empty or consist of only spaces.");
       return;
     }
 
     // Validate totalPrepTime (it should be greater than 0)
     if (price <= 0 || amount <= 0) {
-      setErrorMessage("Number field must be greater than 0.");
+      alert("Number field must be greater than 0.");
       return;
     }
 
@@ -111,13 +112,11 @@ function Edit() {
     try {
       await updatePurchaseById(id, body);
       setSuccess(true);
-      setErrorMessage(null);
-      setStatusCode(null);
+      setError(null);
     } catch (error) {
       console.error(error);
       setSuccess(false);
-      setErrorMessage(error.response.data.message);
-      setStatusCode(error.response.status);
+      setError(error);
     }
   }
 
@@ -320,39 +319,9 @@ function Edit() {
           </div>
         </div>
         <div className="flex items-center justify-end gap-x-6 mt-6">
+          {error && <ErrorAlert error={error} />}
           {success && (
-            <div className="rounded-md bg-green-50 px-3 py-2">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <CheckCircleIcon
-                    className="h-5 w-5 text-green-400"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-green-800">
-                    purchase review update successfully
-                  </h3>
-                </div>
-              </div>
-            </div>
-          )}
-          {errorMessage && (
-            <div className="rounded-md bg-red-50 px-3 py-2">
-              <div className="flex">
-                <div className="flex-shrink-0">
-                  <XCircleIcon
-                    className="h-5 w-5 text-red-400"
-                    aria-hidden="true"
-                  />
-                </div>
-                <div className="ml-3">
-                  <h3 className="text-sm font-medium text-red-800">
-                    {errorMessage} {statusCode && statusCode}
-                  </h3>
-                </div>
-              </div>
-            </div>
+            <SuccessAlert message="purchase update successfully, refresh to see new changes" />
           )}
           <button
             type="submit"
