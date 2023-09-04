@@ -10,6 +10,7 @@ import BarChart from "./views/BarChart";
 
 import Detail from "./views/Detail";
 import Edit from "./views/Edit";
+import Tips from "./views/Tips";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="category" element={<Category />} />
         <Route path="evaluation" element={<Evaluation />} />
         <Route path="chart" element={<BarChart />} />
+        <Route path="tips" element={<Tips />} />
 
         <Route path="detail/:id" element={<Detail />} />
         <Route path="edit/:id" element={<Edit />} />

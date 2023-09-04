@@ -6,6 +6,7 @@ import {
   PlusCircleIcon,
   TagIcon,
   MagnifyingGlassIcon,
+  LightBulbIcon,
 } from "@heroicons/react/24/outline";
 
 import { Link, Outlet } from "react-router-dom";
@@ -52,6 +53,12 @@ function Dashboard() {
       href: "chart",
       icon: ChartBarIcon,
       current: currentTab === "chart",
+    },
+    {
+      name: "tips",
+      href: "tips",
+      icon: LightBulbIcon,
+      current: currentTab === "tips",
     },
   ];
 
